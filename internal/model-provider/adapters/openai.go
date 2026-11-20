@@ -10,6 +10,7 @@ import (
 	"github.com/openai/openai-go/v3/option"
 	"github.com/openai/openai-go/v3/packages/param"
 	"github.com/openai/openai-go/v3/responses"
+	error_utils "github.com/smtdfc/nagare/core/error-utils"
 	message_utils "github.com/smtdfc/nagare/core/message-utils"
 	modelprovider "github.com/smtdfc/nagare/core/model-provider"
 	"github.com/smtdfc/nagare/pkgs/logger"
@@ -147,11 +148,11 @@ func (o *OpenAIAdapter) Invoke(ctx context.Context, inputs []message.Message, co
 			o.logger.Error("stream error", "error", err)
 			if strings.Contains(err.Error(), "404") {
 				outputChannel <- message.NewResponseFailedMessage(
-					fmt.Sprintf("Model %s not found", config.Model),
+					error_utils.ErrModelNotFound.Error(),
 				)
 			} else if strings.Contains(err.Error(), "429") {
 				outputChannel <- message.NewResponseFailedMessage(
-					fmt.Sprintf("Quota exceed: %s", err.Error()),
+					fmt.Sprintf("%s: %s", error_utils.ErrModelQuotaExceed.Error(), err.Error()),
 				)
 			} else if strings.Contains(err.Error(), "402") {
 				outputChannel <- message.NewResponseFailedMessage(
@@ -159,7 +160,7 @@ func (o *OpenAIAdapter) Invoke(ctx context.Context, inputs []message.Message, co
 				)
 			} else {
 				outputChannel <- message.NewResponseFailedMessage(
-					err.Error(),
+					fmt.Sprintf("%s: %s", error_utils.ErrModelProviderResponse.Error(), err.Error()),
 				)
 			}
 		}
