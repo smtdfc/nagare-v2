@@ -13,5 +13,5 @@ var DefaultConfiguration = Configuration{}
 
 func init() {
 	var userHomeDir, _ = os.UserHomeDir()
-	DefaultConfiguration.DataDir = filepath.Join(userHomeDir, ".nagare-v2")
+	DefaultConfiguration.DataDir = filepath.Join(userHomeDir, ".nagare")
 }
