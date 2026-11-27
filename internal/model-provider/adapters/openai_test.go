@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	error_utils "github.com/smtdfc/nagare/core/error-utils"
 	modelprovider "github.com/smtdfc/nagare/core/model-provider"
 	"github.com/smtdfc/nagare/pkgs/logger"
 	"github.com/smtdfc/nagare/pkgs/message"
@@ -156,7 +157,7 @@ func TestOpenAIAdapter_Invoke_NotFoundError(t *testing.T) {
 
 	require.Len(t, got, 1)
 	assert.Equal(t, message.ResponseFailed, got[0].GetType())
-	assert.Contains(t, got[0].(*message.ResponseFailedMessage).Error, "missing-model")
+	assert.Equal(t, error_utils.ErrModelNotFound.Error(), got[0].(*message.ResponseFailedMessage).Error)
 }
 
 func newSSEServer(t *testing.T, status int, events []string) *httptest.Server {
