@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/smtdfc/nagare/core/datastore/filesystem"
+	error_utils "github.com/smtdfc/nagare/core/error-utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -25,6 +26,22 @@ func TestInitDatabase(t *testing.T) {
 
 	_, statErr := os.Stat(dbPath)
 	assert.NoError(t, statErr, "sqlite file should be created at the configured path")
+}
+
+func TestRunMigration_CreatesModelProviderTable(t *testing.T) {
+	db, err := InitDatabase(&filesystem.DataPaths{
+		MainDatabaseFile: filepath.Join(t.TempDir(), "main.db"),
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = db.Close() })
+
+	var count int
+	err = db.NewRaw(
+		"SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = ?",
+		"model_providers",
+	).Scan(t.Context(), &count)
+	require.NoError(t, err)
+	assert.Equal(t, 1, count)
 }
 
 func TestInitDatabase_PathWithSpaces(t *testing.T) {
@@ -70,7 +87,7 @@ func TestInitDatabase_RejectsEmptyPath(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			db, err := InitDatabase(tt.paths)
 
-			assert.ErrorIs(t, err, ErrDatabasePathEmpty)
+			assert.ErrorIs(t, err, error_utils.ErrDatabasePathEmpty)
 			assert.Nil(t, db)
 		})
 	}
