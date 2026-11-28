@@ -16,6 +16,8 @@ func GetEnvOrDefault(key, defaultValue string) string {
 func Load() *Configuration {
 	config := &Configuration{
 		DataDir: GetEnvOrDefault("NAGARE_DATA_DIR", DefaultConfiguration.DataDir),
+		Port:    GetEnvOrDefault("NAGARE_PORT", DefaultConfiguration.Port),
+		Host:    GetEnvOrDefault("NAGARE_HOST", DefaultConfiguration.Host),
 	}
 
 	return config
