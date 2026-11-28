@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/smtdfc/nagare/core/datastore/filesystem"
-	error_utils "github.com/smtdfc/nagare/core/error-utils"
+	errors "github.com/smtdfc/nagare/core/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -87,7 +87,7 @@ func TestInitDatabase_RejectsEmptyPath(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			db, err := InitDatabase(tt.paths)
 
-			assert.ErrorIs(t, err, error_utils.ErrDatabasePathEmpty)
+			assert.ErrorIs(t, err, errors.ErrDatabasePathEmpty)
 			assert.Nil(t, db)
 		})
 	}

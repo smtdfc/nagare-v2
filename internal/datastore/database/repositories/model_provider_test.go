@@ -14,16 +14,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func newModelProviderTestDB(t *testing.T) interface{ Close() error } {
-	t.Helper()
-
-	db, err := database.InitDatabase(&filesystem.DataPaths{
-		MainDatabaseFile: filepath.Join(t.TempDir(), "main.db"),
-	})
-	require.NoError(t, err)
-	return db
-}
-
 func TestNewModelProviderRepository(t *testing.T) {
 	db, err := database.InitDatabase(&filesystem.DataPaths{
 		MainDatabaseFile: filepath.Join(t.TempDir(), "main.db"),
@@ -57,11 +47,12 @@ func TestModelProviderRepository_Create(t *testing.T) {
 	assert.NoError(t, err)
 
 	var stored models.ModelProvider
-	require.NoError(t, db.NewSelect().Model(&stored).Where("1 = 1").Limit(1).Scan(context.Background()))
+	require.NoError(t, db.NewSelect().Model(&stored).Where("id = ?", entity.ID).Scan(context.Background()))
 	assert.Equal(t, entity.ID, stored.ID)
 	assert.Equal(t, entity.Name, stored.Name)
 	assert.Equal(t, entity.BaseURL, stored.BaseURL)
 	assert.Equal(t, entity.ApiKey, stored.ApiKey)
+	assert.Equal(t, models.OpenAI, stored.Compatible)
 	assert.NotZero(t, stored.CreatedAt)
 	assert.NotZero(t, stored.UpdatedAt)
 }

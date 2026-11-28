@@ -7,7 +7,7 @@ import (
 
 	"github.com/smtdfc/nagare/core/datastore/database/models"
 	"github.com/smtdfc/nagare/core/datastore/filesystem"
-	error_utils "github.com/smtdfc/nagare/core/error-utils"
+	errors "github.com/smtdfc/nagare/core/errors"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
 	"github.com/uptrace/bun/driver/sqliteshim"
@@ -35,7 +35,7 @@ func RunMigration(db *bun.DB) error {
 // @Injectable
 func InitDatabase(paths *filesystem.DataPaths) (*bun.DB, error) {
 	if paths == nil || paths.MainDatabaseFile == "" {
-		return nil, error_utils.ErrDatabasePathEmpty
+		return nil, errors.ErrDatabasePathEmpty
 	}
 
 	dsn := url.URL{
