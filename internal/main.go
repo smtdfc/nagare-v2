@@ -10,10 +10,19 @@ import (
 )
 
 func main() {
-	entry, _ := generated.Root()
-	err := entry.Start()
+	entry, err := generated.Root()
 	if err != nil {
-		fmt.Println("Error starting entry:", err)
+		fmt.Printf("Error %s", err)
+		return
+	}
+
+	if entry == nil {
+		return
+	}
+
+	err = entry.Start()
+	if err != nil {
+		entry.Logger.Error("Error starting entry", "error", err)
 		return
 	}
 }
