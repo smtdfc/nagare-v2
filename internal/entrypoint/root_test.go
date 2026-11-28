@@ -29,7 +29,11 @@ func newTestEntrypoint(t *testing.T) *Entrypoint {
 	t.Cleanup(func() { _ = db.Close() })
 
 	log := logger.NewLogger()
-	server := httptransport.NewServer(&configuration.Configuration{Host: "127.0.0.1", Port: "0"}, log)
+	server := httptransport.NewServer(
+		httptransport.ProvideFiberApp(),
+		&configuration.Configuration{Host: "127.0.0.1", Port: "0"},
+		log,
+	)
 	gateway := transport.NewGateway(server)
 	entry := Run(initializer, db, log, gateway)
 	require.NotNil(t, entry)

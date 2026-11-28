@@ -12,7 +12,11 @@ import (
 
 func TestNewGateway(t *testing.T) {
 	log := logger.NewLogger()
-	server := httptransport.NewServer(&configuration.Configuration{Host: "127.0.0.1", Port: "0"}, log)
+	server := httptransport.NewServer(
+		httptransport.ProvideFiberApp(),
+		&configuration.Configuration{Host: "127.0.0.1", Port: "0"},
+		log,
+	)
 
 	gateway := NewGateway(server)
 
