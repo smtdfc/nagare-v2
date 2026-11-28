@@ -4,19 +4,19 @@ import (
 	"strings"
 	"time"
 
-	error_utils "github.com/smtdfc/nagare/core/error-utils"
+	errors "github.com/smtdfc/nagare/core/errors"
 	"github.com/smtdfc/nagare/core/execution"
-	message_utils "github.com/smtdfc/nagare/core/message-utils"
-	modelprovider "github.com/smtdfc/nagare/core/model-provider"
+	messageutils "github.com/smtdfc/nagare/core/messageutils"
+	modelprovider "github.com/smtdfc/nagare/core/modelprovider"
 	"github.com/smtdfc/nagare/pkgs/logger"
 	"github.com/smtdfc/nagare/pkgs/message"
 )
 
-const MaxIteration = 20
+const maxIteration = 20
 
 type Executor struct {
 	ctx         *execution.Context
-	outputChan  message_utils.MessageChannel
+	outputChan  messageutils.MessageChannel
 	adapter     modelprovider.Adapter
 	config      *InvokeConfig
 	state       *State
@@ -33,7 +33,7 @@ func (e *Executor) flushTextMessage() {
 	}
 }
 
-func (e *Executor) handleMessage(stream message_utils.MessageChannel) {
+func (e *Executor) handleMessage(stream messageutils.MessageChannel) {
 	defer e.flushTextMessage()
 
 	for {
@@ -69,8 +69,8 @@ func (e *Executor) handleMessage(stream message_utils.MessageChannel) {
 }
 
 func (e *Executor) startTurn() error {
-	if e.state.LoopCount >= MaxIteration {
-		return error_utils.ErrAgentLoopMaxIterations
+	if e.state.loopCount >= maxIteration {
+		return errors.ErrAgentLoopMaxIterations
 	}
 
 	stream, err := e.adapter.Invoke(e.ctx, e.state.Capture(), &modelprovider.InvokeConfig{
@@ -81,7 +81,7 @@ func (e *Executor) startTurn() error {
 	}
 
 	e.handleMessage(stream)
-	e.state.LoopCount++
+	e.state.loopCount++
 	return nil
 }
 
@@ -102,7 +102,7 @@ func (e *Executor) Start() error {
 		}
 
 		if err := e.startTurn(); err != nil {
-			e.logger.Error("agent turn failed", "error", err, "loops", e.state.LoopCount)
+			e.logger.Error("agent turn failed", "error", err, "loops", e.state.loopCount)
 
 			endTime := time.Now()
 			e.outputChan <- message.NewAgentEndedMessage(
@@ -128,7 +128,7 @@ func (e *Executor) Start() error {
 
 	endTime := time.Now()
 	duration := endTime.Sub(startTime).Seconds()
-	e.logger.Info("agent finished", "loops", e.state.LoopCount, "duration", duration)
+	e.logger.Info("agent finished", "loops", e.state.loopCount, "duration", duration)
 
 	e.outputChan <- message.NewAgentEndedMessage(
 		true,
@@ -152,7 +152,7 @@ func (e *Executor) executeTools() {
 	}
 }
 
-func (e *Executor) WithChannel(channel message_utils.MessageChannel) *Executor {
+func (e *Executor) WithChannel(channel messageutils.MessageChannel) *Executor {
 	e.outputChan = channel
 	return e
 }

@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/smtdfc/nagare/core/execution"
-	message_utils "github.com/smtdfc/nagare/core/message-utils"
-	modelprovider "github.com/smtdfc/nagare/core/model-provider"
+	messageutils "github.com/smtdfc/nagare/core/messageutils"
+	modelprovider "github.com/smtdfc/nagare/core/modelprovider"
 	"github.com/smtdfc/nagare/pkgs/logger"
 	"github.com/smtdfc/nagare/pkgs/message"
 	"github.com/stretchr/testify/assert"
@@ -20,8 +20,8 @@ type testingAdapter struct {
 	testTypes []string
 }
 
-func (t testingAdapter) Invoke(ctx context.Context, inputs []message.Message, config *modelprovider.InvokeConfig) (message_utils.MessageChannel, error) {
-	channel := make(message_utils.MessageChannel)
+func (t testingAdapter) Invoke(ctx context.Context, inputs []message.Message, config *modelprovider.InvokeConfig) (messageutils.MessageChannel, error) {
+	channel := make(messageutils.MessageChannel)
 
 	go func() {
 		defer close(channel)
@@ -58,7 +58,7 @@ func TestExecutor_WithState(t *testing.T) {
 
 func TestExecutor_WithChannel(t *testing.T) {
 	var ctx = execution.NewContext(context.Background())
-	channel := make(message_utils.MessageChannel)
+	channel := make(messageutils.MessageChannel)
 	e := NewExecutor(ctx, logger.NewLogger())
 	assert.Nil(t, e.outputChan)
 	e.WithChannel(channel)
@@ -80,7 +80,7 @@ func TestExecutor_Start_Stream(t *testing.T) {
 	adapter := &testingAdapter{
 		testTypes: []string{"text"},
 	}
-	outputChan := make(message_utils.MessageChannel)
+	outputChan := make(messageutils.MessageChannel)
 	e := NewExecutor(ctx, logger.NewLogger())
 	e.WithAdapter(adapter)
 	e.WithState(state)
@@ -125,7 +125,7 @@ func TestExecutor_Start_ContinuesAfterToolCall(t *testing.T) {
 			{message.NewTextMessage("final", message.Agent)},
 		},
 	}
-	outputChan := make(message_utils.MessageChannel)
+	outputChan := make(messageutils.MessageChannel)
 	e := NewExecutor(execution.NewContext(context.Background()), logger.NewLogger()).
 		WithAdapter(adapter).
 		WithState(state).
@@ -148,7 +148,7 @@ func TestExecutor_Start_ContinuesAfterToolCall(t *testing.T) {
 func TestExecutor_Start_AdapterError(t *testing.T) {
 	state := NewState()
 	adapter := &fakeAdapter{err: errors.New("boom")}
-	outputChan := make(message_utils.MessageChannel)
+	outputChan := make(messageutils.MessageChannel)
 	e := NewExecutor(execution.NewContext(context.Background()), logger.NewLogger()).
 		WithAdapter(adapter).
 		WithState(state).

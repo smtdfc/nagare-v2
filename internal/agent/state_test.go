@@ -105,7 +105,7 @@ func TestNewState(t *testing.T) {
 	assert.NotNil(t, state)
 	assert.NotNil(t, state.CurrentMessage)
 	assert.NotNil(t, state.PendingMessage)
-	assert.Equal(t, 0, state.LoopCount)
+	assert.Equal(t, 0, state.loopCount)
 	assert.Len(t, state.CurrentMessage, 0)
 	assert.Len(t, state.PendingMessage, 0)
 }

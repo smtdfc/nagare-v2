@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	error_utils "github.com/smtdfc/nagare/core/error-utils"
+	errors "github.com/smtdfc/nagare/core/errors"
 	"github.com/smtdfc/nagare/core/execution"
 	"github.com/smtdfc/nagare/pkgs/logger"
 	"github.com/smtdfc/nagare/pkgs/message"
@@ -18,7 +18,7 @@ func TestAgent_Invoke_RequiresState(t *testing.T) {
 	channel, err := agent.Invoke(execution.NewContext(context.Background()), &fakeAdapter{}, nil, &InvokeConfig{})
 
 	assert.Nil(t, channel)
-	assert.Equal(t, error_utils.ErrAgentStateEmpty, err)
+	assert.Equal(t, errors.ErrAgentStateEmpty, err)
 }
 
 func TestAgent_Invoke_RequiresAdapter(t *testing.T) {
@@ -27,7 +27,7 @@ func TestAgent_Invoke_RequiresAdapter(t *testing.T) {
 	channel, err := agent.Invoke(execution.NewContext(context.Background()), nil, nil, &InvokeConfig{})
 
 	assert.Nil(t, channel)
-	assert.Equal(t, error_utils.ErrAdapterNotFound, err)
+	assert.Equal(t, errors.ErrAdapterNotFound, err)
 }
 
 func TestAgent_Invoke_StreamsUntilDone(t *testing.T) {

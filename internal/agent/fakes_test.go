@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	message_utils "github.com/smtdfc/nagare/core/message-utils"
-	modelprovider "github.com/smtdfc/nagare/core/model-provider"
+	messageutils "github.com/smtdfc/nagare/core/messageutils"
+	modelprovider "github.com/smtdfc/nagare/core/modelprovider"
 	"github.com/smtdfc/nagare/pkgs/message"
 )
 
@@ -19,7 +19,7 @@ type fakeAdapter struct {
 	err   error
 }
 
-func (f *fakeAdapter) Invoke(ctx context.Context, inputs []message.Message, config *modelprovider.InvokeConfig) (message_utils.MessageChannel, error) {
+func (f *fakeAdapter) Invoke(ctx context.Context, inputs []message.Message, config *modelprovider.InvokeConfig) (messageutils.MessageChannel, error) {
 	f.mu.Lock()
 	if f.err != nil {
 		err := f.err
@@ -34,7 +34,7 @@ func (f *fakeAdapter) Invoke(ctx context.Context, inputs []message.Message, conf
 	f.calls = append(f.calls, append([]message.Message(nil), inputs...))
 	f.mu.Unlock()
 
-	channel := make(message_utils.MessageChannel)
+	channel := make(messageutils.MessageChannel)
 	go func() {
 		defer close(channel)
 		for _, msg := range reply {

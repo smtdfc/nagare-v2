@@ -10,7 +10,7 @@ type State struct {
 	CurrentMessage []message.Message
 	PendingMessage []message.Message
 	ToolCalls      []message.ToolCallMessage
-	LoopCount      int
+	loopCount      int
 }
 
 func (s *State) AppendMessages(inputs []message.Message) {
@@ -40,6 +40,6 @@ func NewState() *State {
 		CurrentMessage: make([]message.Message, 0),
 		PendingMessage: make([]message.Message, 0),
 		ToolCalls:      make([]message.ToolCallMessage, 0),
-		LoopCount:      0,
+		loopCount:      0,
 	}
 }

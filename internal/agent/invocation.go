@@ -1,10 +1,10 @@
 package agent
 
 import (
-	error_utils "github.com/smtdfc/nagare/core/error-utils"
+	errors "github.com/smtdfc/nagare/core/errors"
 	"github.com/smtdfc/nagare/core/execution"
-	message_utils "github.com/smtdfc/nagare/core/message-utils"
-	modelprovider "github.com/smtdfc/nagare/core/model-provider"
+	messageutils "github.com/smtdfc/nagare/core/messageutils"
+	modelprovider "github.com/smtdfc/nagare/core/modelprovider"
 	"github.com/smtdfc/nagare/pkgs/message"
 )
 
@@ -12,13 +12,13 @@ type InvokeConfig struct {
 	Model string
 }
 
-func (a *Agent) Invoke(ctx *execution.Context, adapter modelprovider.Adapter, inputs []message.Message, config *InvokeConfig) (message_utils.MessageChannel, error) {
+func (a *Agent) Invoke(ctx *execution.Context, adapter modelprovider.Adapter, inputs []message.Message, config *InvokeConfig) (messageutils.MessageChannel, error) {
 	if a.State == nil {
-		return nil, error_utils.ErrAgentStateEmpty
+		return nil, errors.ErrAgentStateEmpty
 	}
 
 	if adapter == nil {
-		return nil, error_utils.ErrAdapterNotFound
+		return nil, errors.ErrAdapterNotFound
 	}
 
 	a.State.AppendMessages(inputs)
