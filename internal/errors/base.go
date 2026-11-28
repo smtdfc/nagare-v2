@@ -1,20 +1,19 @@
-package error_utils
+package apperrors
 
 import (
 	"errors"
-	"strconv"
 )
 
 type BaseError struct {
 	error
 	Message string `json:"message"`
-	Code    string `json:"code"`
+	Code    int    `json:"code"`
 }
 
 func NewError(message string, code int) *BaseError {
 	return &BaseError{
 		error:   errors.New(message),
 		Message: message,
-		Code:    strconv.Itoa(code),
+		Code:    code,
 	}
 }

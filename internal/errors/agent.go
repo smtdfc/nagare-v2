@@ -1,4 +1,4 @@
-package error_utils
+package apperrors
 
 var (
 	ErrAgentStateEmpty        = NewError("Agent state empty", 400)

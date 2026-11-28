@@ -1,4 +1,4 @@
-package error_utils
+package apperrors
 
 var (
 	ErrAdapterNotFound       = NewError("Agent adapter not found", 400)

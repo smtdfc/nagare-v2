@@ -1,4 +1,4 @@
-package error_utils
+package apperrors
 
 import (
 	"testing"
@@ -11,5 +11,5 @@ func TestNewError(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.NotNil(t, err.error)
 	assert.Equal(t, "Error", err.Error())
-	assert.Equal(t, "500", err.Code)
+	assert.Equal(t, 500, err.Code)
 }
