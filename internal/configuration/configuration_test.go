@@ -49,6 +49,31 @@ func TestLoad_FallsBackToDefault(t *testing.T) {
 	assert.NotEmpty(t, config.DataDir)
 }
 
+func TestLoad_UsesHTTPConfiguration(t *testing.T) {
+	t.Setenv("NAGARE_DATA_DIR", "/tmp/nagare")
+	t.Setenv("NAGARE_PORT", "8080")
+	t.Setenv("NAGARE_HOST", "127.0.0.1")
+	t.Setenv("NAGARE_ALLOW_ORIGINS", "https://app.example.com,https://admin.example.com")
+
+	config := Load()
+
+	assert.Equal(t, "8080", config.Port)
+	assert.Equal(t, "127.0.0.1", config.Host)
+	assert.Equal(t, []string{"https://app.example.com", "https://admin.example.com"}, config.AllowOrigins)
+}
+
+func TestLoad_FallsBackToHTTPDefaults(t *testing.T) {
+	t.Setenv("NAGARE_PORT", "")
+	t.Setenv("NAGARE_HOST", "")
+	t.Setenv("NAGARE_ALLOW_ORIGINS", "")
+
+	config := Load()
+
+	assert.Equal(t, DefaultConfiguration.Port, config.Port)
+	assert.Equal(t, DefaultConfiguration.Host, config.Host)
+	assert.NotEmpty(t, config.AllowOrigins)
+}
+
 func TestDefaultConfiguration_HasDataDir(t *testing.T) {
 	assert.NotEmpty(t, DefaultConfiguration.DataDir)
 }
