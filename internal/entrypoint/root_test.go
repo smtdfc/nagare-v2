@@ -29,9 +29,10 @@ func newTestEntrypoint(t *testing.T) *Entrypoint {
 	t.Cleanup(func() { _ = db.Close() })
 
 	log := logger.NewLogger()
+	config := &configuration.Configuration{Host: "127.0.0.1", Port: "0"}
 	server := httptransport.NewServer(
-		httptransport.ProvideFiberApp(),
-		&configuration.Configuration{Host: "127.0.0.1", Port: "0"},
+		httptransport.ProvideFiberApp(config),
+		config,
 		log,
 	)
 	gateway := transport.NewGateway(server)
