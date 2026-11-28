@@ -22,8 +22,13 @@ func (s *Server) Listen() {
 }
 
 // @Injectable
-func NewServer(config *configuration.Configuration, logger *logger.Logger) *Server {
+func ProvideFiberApp() *fiber.App {
 	app := fiber.New()
+	return app
+}
+
+// @Injectable
+func NewServer(app *fiber.App, config *configuration.Configuration, logger *logger.Logger) *Server {
 	return &Server{
 		app:    app,
 		config: config,
